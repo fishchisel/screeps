@@ -1,0 +1,22 @@
+{
+  "name": "screeps-holocene",
+  "version": "1.0.0",
+  "description": "",
+  "main": "none",
+  "devDependencies": {
+    "gulp": "^3.9.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Holocene/screeps.git"
+  },
+  "author": "Holocene",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Holocene/screeps/issues"
+  },
+  "homepage": "https://github.com/Holocene/screeps#readme"
+}

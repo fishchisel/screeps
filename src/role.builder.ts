@@ -29,4 +29,4 @@ var roleBuilder = {
 	}
 };
 
-module.exports = roleBuilder;
+export = roleBuilder;

@@ -4,7 +4,8 @@
   "description": "",
   "main": "none",
   "devDependencies": {
-    "gulp": "^3.9.1"
+    "gulp": "^3.9.1",
+    "gulp-typescript": "^2.13.6"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -15,8 +16,12 @@
   },
   "author": "Holocene",
   "license": "ISC",
+  "private": true,
   "bugs": {
     "url": "https://github.com/Holocene/screeps/issues"
   },
-  "homepage": "https://github.com/Holocene/screeps#readme"
+  "homepage": "https://github.com/Holocene/screeps#readme",
+  "dependencies": {
+    "lodash": "^4.14.0"
+  }
 }

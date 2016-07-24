@@ -6,13 +6,13 @@ var roleHarvester = {
 
       if (creep.memory.target === undefined) {
         var sources = creep.room.find(FIND_SOURCES);
-        var source = sources[Math.floor(Math.random() * sources.length)];
+        let source = sources[Math.floor(Math.random() * sources.length)];
 
         //var closest = creep.pos.findClosestByRange(FIND_SOURCES);
         creep.memory.target = source.id;
       }
 
-      var source = Game.getObjectById(creep.memory.target);
+      let source = Game.getObjectById(creep.memory.target);
       if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
         creep.moveTo(source);
       }
@@ -38,4 +38,4 @@ var roleHarvester = {
   }
 };
 
-module.exports = roleHarvester;
+export = roleHarvester;

@@ -1,0 +1,10 @@
+{
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
+  "compilerOptions": {
+
+  },
+  "compileOnSave": false
+}

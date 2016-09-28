@@ -1,6 +1,6 @@
 const ROOM_SIZE = 50
 
-/* Returns the positions within the given range of the given position that match
+/** Returns the positions within the given range of the given position that match
  * the given function. Default range is 1. Function may be undefined. Function
  * receives a room position as an argument. */
 function getPositionsInRange(pos: RoomPosition,

@@ -1,6 +1,8 @@
 import { getPositionsInRange } from './utils'
 import * as _ from 'lodash'
 
+/** Finds valid mining positions for the given room. A valid position is any
+ * position a creep may stand on. */
 function findMiningPosForRoom(room: Room) : RoomPosition[] {
   let sources = room.find<Source>(FIND_SOURCES);
 
@@ -9,7 +11,7 @@ function findMiningPosForRoom(room: Room) : RoomPosition[] {
     []);
 }
 
-/* Finds valid mining positions for the given source. A valid position is any
+/** Finds valid mining positions for the given source. A valid position is any
  * position that a creep may stand on. */
 function findMiningPosForSource(source: Source) : RoomPosition[] {
   return getPositionsInRange(

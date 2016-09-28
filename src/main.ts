@@ -1,15 +1,15 @@
 import * as _ from "lodash";
 
 import * as roleHarvester from './role.harvester';
-import * as roleUpgrader from './role.upgrader';
-import * as roleBuilder from './role.builder';
+import * as roleUpgrader  from './role.upgrader';
+import * as roleBuilder   from './role.builder';
 
-import buildManager = require('./build.manager');
+import * as buildManager from'./build.manager';
 
-var TARGET_CREEPS = 16;
+var TARGET_CREEPS = 20;
 var TARGET_ROLES = {
   'harvester': 4,
-  'upgrader': 12
+  'upgrader': 16
 }
 
 function generateRoleCounts() {

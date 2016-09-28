@@ -60,4 +60,4 @@ function positionExtension(room: Room) : RoomPosition {
   return null;
 }
 
-export = {isBuildable, positionExtension};
+export {isBuildable, positionExtension};

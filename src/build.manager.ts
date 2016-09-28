@@ -1,4 +1,4 @@
-import buildLocFinder = require("./build.location-finder");
+import * as buildLocFinder from "./build.location-finder";
 
 function constructExtensions(room: Room, count: number) {
   var curConstrs = room.find(FIND_MY_CONSTRUCTION_SITES, {
@@ -16,4 +16,4 @@ function constructExtensions(room: Room, count: number) {
 }
 
 
-export = { constructExtensions };
+export { constructExtensions };

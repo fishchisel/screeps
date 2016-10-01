@@ -1,4 +1,4 @@
-import { getPositionsInRange } from './utils'
+import { getPositionsInRange } from './room-position.utils';
 import * as _ from 'lodash'
 
 /** Finds valid mining positions for the given room. A valid position is any
@@ -22,4 +22,20 @@ function findMiningPosForSource(source: Source) : RoomPosition[] {
     1);
 }
 
-export { findMiningPosForRoom, findMiningPosForSource }
+/** Finds the source closest to the given room position. */
+function findSourceForRoomPos(pos: RoomPosition) : Source {
+  return <Source>pos.findClosestByRange(FIND_SOURCES);
+}
+
+/** Given a source, finds the optimal container position for it. */
+function findContainerPosForSource(source: Source) : RoomPosition {
+  let miningPositions = findMiningPosForSource(source);
+  return new RoomPosition(0,0,"sim");
+}
+
+export {
+  findMiningPosForRoom,
+  findMiningPosForSource,
+  findSourceForRoomPos,
+  findContainerPosForSource
+}

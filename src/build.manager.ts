@@ -14,7 +14,8 @@ function constructExtensions(room: Room, count: number) {
   var toBuild = count - numExtensions;
 
   var pos = buildLocFinder.positionExtension(room);
-  room.createConstructionSite(pos, STRUCTURE_EXTENSION);
+  if (pos) room.createConstructionSite(pos, STRUCTURE_EXTENSION);
+  else console.log("No free constuction site for extension.");
 }
 
 export { constructExtensions };

@@ -36,9 +36,9 @@ function isBuildable(pos: RoomPosition) : boolean {
 
 /**
  * Finds the next free location in which an extension can be placed in the
- * given room.
+ * given room. Returns null if there is no such location.
  */
-function positionExtension(room: Room) : RoomPosition {
+function positionExtension(room: Room) : RoomPosition | null {
   let spawns = room.find(FIND_MY_SPAWNS).sort() as StructureSpawn[];
 
   if (spawns.length === 0 ) {

@@ -91,15 +91,14 @@ export function run() {
 }
 
 /** Orders a new creep of the given type in the given room with the given name.
-  * Returns a boolean indicating if a valid body plan was available for the
-  * given creep type. */
-export function order(room: Room, creepType: CreepType, name: string) : boolean {
+  * Returns nothing if success, or an error message if the order could not be
+  * queued. */
+export function order(room: Room, creepType: CreepType, name: string) : string | undefined {
 
   let bodyPlan = getBodyPlan(creepType, room.energyCapacityAvailable);
-  if (!bodyPlan) return false;
+  if (!bodyPlan) return "No available body plan.";
 
   addOrder(room, bodyPlan, name);
-  return true;
 }
 
 /** Checks whether a creature with the given name has already been ordered */

@@ -58,9 +58,9 @@ function sourceManagerFromSource(source: Source) : SourceManager {
 function buildMiner(mngr: SourceManager, pos: MinerPosition) : boolean {
   if (!spawnManager.isOrdered(pos.minerName)) {
     let room = Game.rooms[mngr.roomName];
-    let success = spawnManager.order(room, "miner", pos.minerName);
-    if (!success) console.log("miner.mananger: could not build miner.");
-    return success;
+    let err = spawnManager.order(room, "miner", pos.minerName);
+    if (err) console.log(`miner.mananger: could not queue miner: ${err}`);
+    return !err;
   }
   return false;
 }

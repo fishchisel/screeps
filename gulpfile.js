@@ -11,23 +11,15 @@ var credentials = require('./credentials.js')
 //     password: '????',
 // };
 
-
 var tsProject = ts.createProject("tsconfig.json");
 
 /* Default Task */
-gulp.task('default', ['typescript-compile'], function() {
+gulp.task('default', ['upload-sim'], function() {
 
-})
-
-/* Compiles all typescript */
-gulp.task('typescript-compile', function() {
-  return tsProject.src()
-    .pipe(ts(tsProject))
-    .js.pipe(gulp.dest("dist"));
 })
 
 /* Uploads to default branch */
-gulp.task('upload', ['typescript-compile'], function () {
+gulp.task('upload', function () {
   credentials.branch = 'default';
   credentials.ptr = false;
 
@@ -35,7 +27,7 @@ gulp.task('upload', ['typescript-compile'], function () {
 })
 
 /* Uploads to sim branch */
-gulp.task('upload-sim', ['typescript-compile'], function () {
+gulp.task('upload-sim', function () {
   credentials.branch = 'sim';
   credentials.ptr = false;
 

@@ -16,10 +16,11 @@ function findMiningPosForRoom(room: Room) : RoomPosition[] {
 function findMiningPosForSource(source: Source) : RoomPosition[] {
   return rputils.posInRange(
     source.pos,
+    1,
     (p) => {
       let tr = p.lookFor<string>(LOOK_TERRAIN)[0];
-          return tr === 'plain' || tr === 'swamp'},
-    1);
+      return tr === 'plain' || tr === 'swamp'
+    });
 }
 
 /** Finds the source closest to the given room position. */
@@ -30,25 +31,28 @@ function findSourceForRoomPos(pos: RoomPosition) : Source {
 /** Given a source, finds the optimal container position for it. */
 function findContainerPosForSource(source: Source) : RoomPosition {
   let miningPositions = findMiningPosForSource(source);
+  // TODO: This brute force algorithm is inefficient. Can it be made better?
 
   // Is the given RoomPosition buildable and not a mining position?
   let validContainerPos = (r: RoomPosition) : boolean => {
     let tr = r.lookFor<string>(LOOK_TERRAIN)[0];
-    let isMiningPosition = rputils.contains(r, miningPositions);
-    return (tr === 'plain' || tr === 'swamp') && !isMiningPosition;
+    let isMiningPos = rputils.contains(r, miningPositions);
+    let isSource = r.isEqualTo(source.pos);
+    return (tr === 'plain' || tr === 'swamp') && !isMiningPos && !isSource;
   }
 
   // Find a container position that is as close as possible to all mining
   // positions, without actually being a mining position.
   for (let i = 1; i < 5; i++) {
     let inRange = miningPositions.map((val) => {
-      return rputils.posInRange(val, validContainerPos, i);
+      return rputils.posInRange(val, i, validContainerPos);
     })
     let intersect = rputils.intersect(...inRange);
     if (intersect.length > 0) return intersect[0];
   }
 
-  console.log("mine.utils: Unexpected inability to find container");
+  let p = source.pos;
+  console.log(`mine.utils: Unable to find container: ${p.x}, ${p.y}`);
   return source.pos;
 }
 

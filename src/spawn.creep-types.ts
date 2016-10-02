@@ -27,7 +27,7 @@ function getBodyPlan(creepType: CreepType, maxCost: number) : string[] | null {
 
   if (options) {
     for (let entry of options) {
-      if (entry.cost < maxCost) return entry.parts;
+      if (entry.cost <= maxCost) return entry.parts;
     }
   }
 

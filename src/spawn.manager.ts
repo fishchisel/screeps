@@ -13,28 +13,6 @@ interface Order {
   s?: string | number
 }
 
-/** Processes all orders. */
-function run() {
-  let orders = getOrderMemory();
-
-  for (let i = 0; i < orders.length; i++) {
-    let order = orders[i];
-
-    // if order not yet sent to spawn, try to send it to spawn.
-    if (!order.s) {
-      let res = buildOrder(order);
-      if (res) {
-        order.s = res;
-      }
-    }
-    // if order errored or order is complete, remove it.
-    else if (typeof(order.s) === 'number' || !orderIsBeingBuilt(order)) {
-      orders.splice(i, 1);
-      i--;
-    }
-  }
-}
-
 /** Tries to build the given order. Returns one of:
   *  - the name of the spawn if construction started
   *  - an error code number if a fatal error occured.
@@ -59,7 +37,7 @@ function buildOrder(order: Order) : string | number | null {
     if (result === ERR_BUSY || result === ERR_NOT_ENOUGH_ENERGY) {
       return null;
     }
-    console.log(`spawn.manager: fatal error when spawning: ${result}`); 
+    console.log(`spawn.manager: fatal error when spawning: ${result}`);
     return result;
   }
   return spawn.name;
@@ -78,17 +56,6 @@ function getOrderMemory() : Order[] {
   return (<Order[]>(<any>Memory).orders);
 }
 
-/** Orders a new creep of the given type in the given room with the given name.
-  * */
-function order(room: Room, creepType: CreepType, name: string) : boolean {
-
-  let bodyPlan = getBodyPlan(creepType, room.energyCapacityAvailable);
-  if (!bodyPlan) return false;
-
-  addOrder(room, bodyPlan, name);
-  return true;
-}
-
 /** Adds a new order for a creep of the given body plan with the given name to
   * the given room. */
 function addOrder(room: Room, bodyPlan: string[], name: string) {
@@ -101,10 +68,42 @@ function addOrder(room: Room, bodyPlan: string[], name: string) {
   })
 }
 
+/** Processes all orders. */
+export function run() {
+  let orders = getOrderMemory();
+
+  for (let i = 0; i < orders.length; i++) {
+    let order = orders[i];
+
+    // if order not yet sent to spawn, try to send it to spawn.
+    if (!order.s) {
+      let res = buildOrder(order);
+      if (res) {
+        order.s = res;
+      }
+    }
+    // if order errored or order is complete, remove it.
+    else if (typeof(order.s) === 'number' || !orderIsBeingBuilt(order)) {
+      orders.splice(i, 1);
+      i--;
+    }
+  }
+}
+
+/** Orders a new creep of the given type in the given room with the given name.
+  * Returns a boolean indicating if a valid body plan was available for the
+  * given creep type. */
+export function order(room: Room, creepType: CreepType, name: string) : boolean {
+
+  let bodyPlan = getBodyPlan(creepType, room.energyCapacityAvailable);
+  if (!bodyPlan) return false;
+
+  addOrder(room, bodyPlan, name);
+  return true;
+}
+
 /** Checks whether a creature with the given name has already been ordered */
-function isOrdered(name: string) : boolean {
+export function isOrdered(name: string) : boolean {
   let orders = getOrderMemory();
   return orders.some((val) => val.n === name);
 }
-
-export { run, order, isOrdered }

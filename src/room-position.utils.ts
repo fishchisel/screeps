@@ -2,12 +2,14 @@ import * as _ from "lodash";
 
 const ROOM_SIZE = 50
 
+type TerrainTypes = "plain" | "swamp" | "wall";
+
 /** Returns the positions within the given range of the given position that match
  * the given function. Default range is 1. Function may be undefined. Function
  * receives a room position as an argument. */
-function getPositionsInRange(pos: RoomPosition,
-                             filter?: (pos: RoomPosition) => boolean,
-                             range = 1) : RoomPosition[] {
+export function posInRange(pos: RoomPosition,
+                    filter?: (pos: RoomPosition) => boolean,
+                    range = 1) : RoomPosition[] {
   let room = Game.rooms[pos.roomName]
 
   // Find positions around 'pos', skipping positions outside range 0 - 49.
@@ -29,9 +31,17 @@ function getPositionsInRange(pos: RoomPosition,
   return positions
 }
 
-/** Given an array of arrays containing room positions, finds all room positions
-  * that appears in all arrays. */
-function findCommonPosition(...posSet: RoomPosition[][]) : RoomPosition[] {
+/** Returns whether the two given positions are within the given range
+  * (default 1) of each other. */
+export function isPosInRange(posa: RoomPosition,
+                             posb: RoomPosition,
+                             range = 1) : boolean {
+  return Math.abs(posa.x - posb.x) <= range
+      && Math.abs(posa.y - posb.y) <= range;
+}
+
+/** Returns the intersection of the given RoomPosition[] arrays. */
+export function intersect(...posSet: RoomPosition[][]) : RoomPosition[] {
   if (posSet.length === 0) return [];
 
   let comparator = (a,b) => (a.x === b.x && a.y === b.y)
@@ -49,4 +59,7 @@ function findCommonPosition(...posSet: RoomPosition[][]) : RoomPosition[] {
   return intersection;
 }
 
-export { getPositionsInRange, findCommonPosition }
+/** Returns where 'pos' is contained within 'poses' */
+export function contains(pos: RoomPosition, poses: RoomPosition[]) : boolean {
+  return poses.some((val) => pos.x === val.x && pos.y === val.y)
+}

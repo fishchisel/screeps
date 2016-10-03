@@ -2,7 +2,7 @@ import * as _ from "lodash";
 
 const ROOM_SIZE = 50
 
-type TerrainTypes = "plain" | "swamp" | "wall";
+type TerrainType = "plain" | "swamp" | "wall";
 
 /** Returns the positions within the given range of the given position that match
  * the given function. Default range is 1. Function may be undefined. Function
@@ -95,7 +95,27 @@ export function intersect(...posSet: RoomPosition[][]) : RoomPosition[] {
   return intersection;
 }
 
+/** Returns the terrain at the given position. */
+export function terrain(pos: RoomPosition) : TerrainType {
+  let tr = pos.lookFor<string>(LOOK_TERRAIN);
+  return <TerrainType>tr[0];
+}
+
+export function terrainWalkable(pos: RoomPosition) : boolean {
+  let tr = terrain(pos);
+  return tr === 'plain' || tr === 'swamp';
+}
+
 /** Returns where 'pos' is contained within 'poses' */
 export function contains(pos: RoomPosition, poses: RoomPosition[]) : boolean {
   return poses.some((val) => pos.x === val.x && pos.y === val.y)
+}
+
+/** Generates a string representation of the given RoomPosition array */
+export function toString(poses: RoomPosition[]) : string {
+  let str = poses.reduce((p,c,i) => {
+    if (i > 0) return `${p }, [${c.x}, ${c.y}]`
+    else return ` [${c.x}, ${c.y}]`
+   },"[");
+   return str + ' ]'
 }

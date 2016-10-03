@@ -5,7 +5,6 @@ import * as mineManager  from './mine.manager';
 import * as spawnManager from './spawn.manager';
 
 function loop () {
-
   for (let roomName in Game.rooms) {
     let room = Game.rooms[roomName];
 

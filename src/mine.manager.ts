@@ -4,6 +4,8 @@ import { findMiningPosForSource,
 
 import * as rputils from './room-position.utils'
 import * as spawnManager from './spawn.manager'
+import * as cutils from './creep.utils'
+import * as butils from './build.utils'
 
 
 interface MinerPosition {
@@ -65,32 +67,23 @@ function buildMiner(mngr: SourceManager, pos: MinerPosition) : boolean {
   return false;
 }
 
-/** moves the creep towards the container, and drops off resources if possible.
-  * we must handle the case that there is no container built yet, so we have to
-  * drop on the ground. */
-function moveToContainer(mngr: SourceManager, creep: Creep) {
+/** Tries to deposit at the target container. IF the container doesn't exist,
+  * builds it. */
+function depositAtContainer(mngr: SourceManager, creep: Creep) {
   let cpos = mngr.containerPos;
   let structures = cpos.lookFor<Structure>(LOOK_STRUCTURES)
 
-  // is there a structure at the target position?
   if (structures.length) {
-    let structure = structures[0];
-    // is adjacent to structure?
-    if (rputils.isPosInRange(cpos, structure.pos)) {
-      let err = creep.transfer(structure, RESOURCE_ENERGY);
-      if (err) console.log(`mine.manager: Could not transfer: ${err}`)
-    }
-    else {
-      creep.moveTo(cpos);
-    }
+    cutils.repair(structures[0], creep);
+    cutils.transfer(structures[0], creep);
   }
   else {
-    // are we on the container?
-    if (cpos.isEqualTo(creep.pos)) {
-      creep.drop(RESOURCE_ENERGY);
+    let csites = <ConstructionSite[]>cpos.lookFor(LOOK_CONSTRUCTION_SITES);
+    if (!csites.length) {
+      butils.makeCSite(cpos, STRUCTURE_CONTAINER);
     }
     else {
-      creep.moveTo(cpos);
+      cutils.build(csites[0], creep);
     }
   }
 }
@@ -102,7 +95,12 @@ function moveMiner(mngr: SourceManager, mpos: MinerPosition, creep: Creep) {
 
   // is miner full?
   if (creep.carry.energy >= creep.carryCapacity) {
-    moveToContainer(mngr, creep);
+    if (rputils.isPosInRange(creep.pos, mngr.containerPos)) {
+      depositAtContainer(mngr, creep);
+    }
+    else {
+      creep.moveTo(mngr.containerPos);
+    }
   }
   else {
     // is creep at mining position?
@@ -114,7 +112,6 @@ function moveMiner(mngr: SourceManager, mpos: MinerPosition, creep: Creep) {
       creep.moveTo(mpos.pos);
     }
   }
-
 }
 
 /** Runs logic for all source managers in the given room. */

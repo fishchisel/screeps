@@ -10,7 +10,7 @@ interface CreepParts {
 // IMPORTANT: Ensure creep type options are sorted by cost (highest first)
 const creepTypes : { [s : string ] : CreepParts[] }  = {
   "miner": [
-    {cost: 300, parts: [ WORK, WORK, CARRY, MOVE ]}
+    {cost: 250, parts: [ WORK, WORK, MOVE ]}
   ],
   "hauler": [
     {cost: 100, parts: [ MOVE, CARRY ] }
@@ -22,7 +22,7 @@ const creepTypes : { [s : string ] : CreepParts[] }  = {
 
 /** Returns a body pattern for the given type that must cost at most 'maxCost'
   * energy to build. */
-function getBodyPlan(creepType: CreepType, maxCost: number) : string[] | null {
+function getBodyPlan(creepType: CreepType, maxCost: number) : string[] {
   let options = creepTypes[creepType];
 
   if (options) {
@@ -31,7 +31,8 @@ function getBodyPlan(creepType: CreepType, maxCost: number) : string[] | null {
     }
   }
 
-  return null;
+  console.log(`assignment.creep-types: No body plan : ${creepType} ${maxCost}`);
+  return []
 }
 
 export { CreepType, getBodyPlan }

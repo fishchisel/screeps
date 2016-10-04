@@ -76,6 +76,25 @@ export function isPosInRange(posa: RoomPosition,
       && Math.abs(posa.y - posb.y) <= range;
 }
 
+/** Finds the position in the given array of RoomPositions that is closest to
+  * the given target. */
+export function closestTo(target: RoomPosition, poses: RoomPosition[])
+                            : RoomPosition {
+  if (poses.length === 0) return target;
+
+  let dist = 10000;
+  let closest = poses[0];
+  for (let p of poses) {
+    let newDist = p.getRangeTo(target);
+    if (newDist < dist) {
+      dist = newDist;
+      closest = p;
+    }
+  }
+
+  return closest;
+}
+
 /** Returns the intersection of the given RoomPosition[] arrays. */
 export function intersect(...posSet: RoomPosition[][]) : RoomPosition[] {
   if (posSet.length === 0) return [];

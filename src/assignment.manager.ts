@@ -1,6 +1,7 @@
 import { CreepPlan, makeBodyPlan } from './assignment.body-creator';
 import * as sputils from './spawn.utils'
 import * as amem from './assignment.memory'
+import * as autils from './assignment.utils'
 
 export enum Priority {
   Critical = 1,
@@ -31,7 +32,7 @@ let _requests : Request[] = [];
   * fuzzy: if true, bodyTypes similar to the request may be assigned. */
 export function request(creepPlan: CreepPlan, ownerId: string, jobId: string,
                         pos: RoomPosition, priority: Priority, fuzzy = true) {
-
+  // has the request queue been cleared since the last game tick?
   if (Game.time > _requestQueueTime) {
     _requestQueueTime = Game.time;
     _requests = [];
@@ -53,9 +54,12 @@ export function getAssignments(ownerId: string) : Creep[] {
   return creepNames.map((n) => Game.creeps[n]);
 }
 
+/** Returns the first creep in the given creep array to match the given plan.
+  * returns undefined if there is no such creep. */
 function findCreepForPlan(plan: CreepPlan, creeps: Creep[]) : Creep|undefined {
-  //TODO: Implement this
-  return undefined;
+  for (let creep of creeps) {
+    if(autils.creepMatchesPlan(creep,plan)) return creep;
+  }
 }
 
 /** Runs the assignment mananger.

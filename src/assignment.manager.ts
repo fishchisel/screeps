@@ -1,5 +1,6 @@
-import { CreepType, getBodyPlan } from './assignment.creep-types'
+import { CreepPlan, makeBodyPlan } from './assignment.body-creator';
 import * as sputils from './spawn.utils'
+import * as amem from './assignment.memory'
 
 export enum Priority {
   Critical = 1,
@@ -10,7 +11,7 @@ export enum Priority {
 }
 
 interface Request{
-  creepType: CreepType;
+  creepPlan: CreepPlan;
   pos: RoomPosition
   ownerId: string;
   jobId: string;
@@ -28,55 +29,33 @@ let _requests : Request[] = [];
   * pos: A location where the assignment should try to be close to.
   * priority: priority of the request
   * fuzzy: if true, bodyTypes similar to the request may be assigned. */
-export function request(creepType: CreepType, ownerId: string, jobId: string,
+export function request(creepPlan: CreepPlan, ownerId: string, jobId: string,
                         pos: RoomPosition, priority: Priority, fuzzy = true) {
 
   if (Game.time > _requestQueueTime) {
     _requestQueueTime = Game.time;
     _requests = [];
   }
-  _requests.push({ creepType: creepType, ownerId: ownerId, jobId: jobId,
+  _requests.push({ creepPlan: creepPlan, ownerId: ownerId, jobId: jobId,
                    pos: pos, priority: priority, fuzzy: fuzzy });
-}
-
-/** Gets the assignments memory obj for the given owner. Changes to the obj are
-  * persisted. */
-function getAssignmentsMemory(ownerId: string) : {[cname: string] : boolean } {
-  if (!Memory['assignments']) Memory['assignments'] = {}
-  if (!Memory['assignments'][ownerId]) Memory['assignments'][ownerId] = {}
-  return Memory['assignments'][ownerId];
-}
-
-/** Unassigns the creep */
-function unassign(ownerId: string, creep: Creep) {
-  let mem = getAssignmentsMemory(ownerId);
-  delete mem[creep.name];
-}
-
-/** Assigns the given creep name to the given ownerId */
-function assign(ownerId: string, creep: Creep) {
-  let mem = getAssignmentsMemory(ownerId);
-  mem[creep.name] = true;
 }
 
 /** Release the given creep back to the assignnment manager. */
 export function release(ownerId: string, creep: Creep) {
-  unassign(ownerId, creep);
-  assign('unassigned', creep);
+  amem.unassign(ownerId, creep);
+  amem.assign('unassigned', creep);
 }
 
 /** Gets the creeps assigned to the given ownerId. Returns an array of creep
   * names, corresponding to the creeps assigned to the ownerId. */
 export function getAssignments(ownerId: string) : Creep[] {
-  let mem = getAssignmentsMemory(ownerId)
-  return Object.keys(mem).map((n) => Game.creeps[n]);
+  let creepNames = amem.getAssignments(ownerId)
+  return creepNames.map((n) => Game.creeps[n]);
 }
 
-function findCreepForType(type: string, creeps: Creep[]) : Creep|undefined {
-  //TODO: Room awareness
-  for (let creep of creeps) {
-    if (creep.memory['type'] === type) return creep;
-  }
+function findCreepForPlan(plan: CreepPlan, creeps: Creep[]) : Creep|undefined {
+  //TODO: Implement this
+  return undefined;
 }
 
 /** Runs the assignment mananger.
@@ -96,22 +75,22 @@ export function run() {
   building   = getAssignments('building');
   for (let req of _requests) {
     // if valid unassigned creep, assign it.
-    let ucreep = findCreepForType(req.creepType, unassigned);
+    let ucreep = findCreepForPlan(req.creepPlan, unassigned);
     if (ucreep) {
-      assign(req.ownerId, ucreep);
+      amem.assign(req.ownerId, ucreep);
       continue;
     }
 
     // if creep still building, just continue
-    let bcreep = findCreepForType(req.creepType, building);
+    let bcreep = findCreepForPlan(req.creepPlan, building);
     if (bcreep) continue;
 
-    // try to queue the request
+    // try to build the request and put it in the 'building' assignment group.
     let room = Game.rooms[req.pos.roomName];
-    let body = []//getBodyPlan(req.creepType, room.energyCapacityAvailable);
-    let name = sputils.order(room, body, req.creepType);
+    let body = makeBodyPlan(req.creepPlan, room.energyCapacityAvailable);
+    let name = sputils.order(room, body);
     if (name) {
-       assign('building', Game.creeps[name]);
+       amem.assign('building', Game.creeps[name]);
      }
   }
 }

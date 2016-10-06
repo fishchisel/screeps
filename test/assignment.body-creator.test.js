@@ -3,7 +3,7 @@
 require('./screeps.constants');
 
 const expect = require('chai').expect;
-const assCreepTypes = require('../dist/assignment.creep-types');
+const assCreepTypes = require('../dist/assignment.body-creator');
 
 describe("Assignment Creep Types", () => {
   function countParts(arr, partName) {
@@ -11,7 +11,7 @@ describe("Assignment Creep Types", () => {
   }
 
   describe("get body plan", () => {
-    let sut = assCreepTypes.getBodyPlan
+    let sut = assCreepTypes.makeBodyPlan
 
     it("Empty Plan -> Empty result", () => {
       let plan = {}
@@ -63,6 +63,32 @@ describe("Assignment Creep Types", () => {
 
       expect(result.length).to.equal(8);
       expect(moveCount).to.equal(4);
+    });
+
+    it("4/road creep -> has 2 moves", () => {
+      let plan = {
+        work:  {min: 4},
+        move:  'road'
+      }
+
+      let result = sut(plan, 1000)
+      let moveCount = countParts(result, MOVE);
+
+      expect(result.length).to.equal(6);
+      expect(moveCount).to.equal(2);
+    });
+
+    it("3/road creep -> has 2 moves", () => {
+      let plan = {
+        work:  {min: 3},
+        move:  'road'
+      }
+
+      let result = sut(plan, 1000)
+      let moveCount = countParts(result, MOVE);
+
+      expect(result.length).to.equal(5);
+      expect(moveCount).to.equal(2);
     });
 
     it("Can't build creep => returns empty", () => {

@@ -60,7 +60,11 @@ export function run(source: Source) {
     moveMiner(source, miner);
   }
   else {
-    assignMngr.request('miner',  getAssignmentId(source), "", source.pos,
+    let plan = {move: 'min'}
+    plan[WORK] = 1;
+    plan[CARRY] = 1;
+
+    assignMngr.request(plan,  getAssignmentId(source), "", source.pos,
                        assignMngr.Priority.Medium);
   }
 }

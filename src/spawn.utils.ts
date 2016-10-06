@@ -22,9 +22,9 @@ function build(room: Room, bodyPlan: string[], memory = {}): string|undefined {
 
 /** Tries to build the given creep in the given room. Returns the name of the
   * creep if construction was queued, or nothing if the creep was not queued.*/
-export function order(room: Room, bodyPlan: string[], type: string)
+export function order(room: Room, bodyPlan: string[])
                       : string|undefined {
-  return build(room, bodyPlan, {type: type });
+  return build(room, bodyPlan);
 }
 
 /** Gets the spawns for a room.

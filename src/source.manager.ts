@@ -30,10 +30,15 @@ function getSourceManager(source: Source) : SourceManager {
   return sourceManagerCache[source.id];
 }
 
+/** Gets the assignment id for the source. */
+function getAssignmentId(source: Source) : string {
+  return `${source.room.name}-source-${source.pos.x}-${source.pos.y}`
+}
+
 /** Gets the miner assigned to the given source, or null. For now we're
   * assuming any assigned creep is the miner */
 function getMiner(source: Source) : Creep | null {
-  let creeps = assignMngr.getAssignments(source.id);
+  let creeps = assignMngr.getAssignments(getAssignmentId(source));
   if (creeps.length) return creeps[0];
   return null;
 }
@@ -55,7 +60,7 @@ export function run(source: Source) {
     moveMiner(source, miner);
   }
   else {
-    assignMngr.request('miner', source.id, "", source.pos,
+    assignMngr.request('miner',  getAssignmentId(source), "", source.pos,
                        assignMngr.Priority.Medium);
   }
 }

@@ -47,17 +47,22 @@ function getAssignmentsMemory(ownerId: string) : {[cname: string] : boolean } {
   return Memory['assignments'][ownerId];
 }
 
-/** Assigns the given creep name to the given ownerId */
-function assign(ownerId: string, name: string) {
+/** Unassigns the creep */
+function unassign(ownerId: string, creep: Creep) {
   let mem = getAssignmentsMemory(ownerId);
-  mem[name] = true;
+  delete mem[creep.name];
 }
 
-/** Release the given creeo back to the assignnment manager. */
+/** Assigns the given creep name to the given ownerId */
+function assign(ownerId: string, creep: Creep) {
+  let mem = getAssignmentsMemory(ownerId);
+  mem[creep.name] = true;
+}
+
+/** Release the given creep back to the assignnment manager. */
 export function release(ownerId: string, creep: Creep) {
-  let omem = getAssignmentsMemory(ownerId);
-  if (omem[creep.name]) delete omem[creep.name];
-  assign('unassigned', creep.name);
+  unassign(ownerId, creep);
+  assign('unassigned', creep);
 }
 
 /** Gets the creeps assigned to the given ownerId. Returns an array of creep
@@ -93,7 +98,7 @@ export function run() {
     // if valid unassigned creep, assign it.
     let ucreep = findCreepForType(req.creepType, unassigned);
     if (ucreep) {
-      assign(req.ownerId, ucreep.name);
+      assign(req.ownerId, ucreep);
       continue;
     }
 
@@ -103,8 +108,10 @@ export function run() {
 
     // try to queue the request
     let room = Game.rooms[req.pos.roomName];
-    let body = getBodyPlan(req.creepType, room.energyCapacityAvailable);
+    let body = []//getBodyPlan(req.creepType, room.energyCapacityAvailable);
     let name = sputils.order(room, body, req.creepType);
-    if (name) assign('building', name);
+    if (name) {
+       assign('building', Game.creeps[name]);
+     }
   }
 }

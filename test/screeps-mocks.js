@@ -1,6 +1,9 @@
+'use strict';
+
+// constants
+require('./screeps.constants');
 
 // Game mock object
-global.LOOK_TERRAIN = 'look'
 global.Game = {
   rooms: {
     'test-room': {
